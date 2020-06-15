@@ -33,11 +33,11 @@ const Namespace = ({ history }) => {
         <div className="container center">
             <form onSubmit={onSubmit}>
                 <div className="input-field">
-                    <input type="text" placeholder='Enter Your Name' onChange={onChange} value={name} name='name' required/>
+                    <input type="text" onChange={onChange} value={name} name='name' required/>
                     <label htmlFor="name">Name</label>
                 </div>
                 <div className="input-field">
-                    <input type="text" placeholder='Enter Room You Want To Join' onChange={onChange} value={room} name='room' required/>
+                    <input type="text" onChange={onChange} value={room} name='room' required/>
                     <label htmlFor="room">Room</label>
                 </div>
                 <div className="input-field">

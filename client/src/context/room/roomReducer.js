@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT } from '../types'
+import { LOGIN, LOGOUT, NOTIFICATION, MESSAGE, ROOM_DATA } from '../types'
 
 export default (state, action) => {
     const { type, payload } = action;
@@ -19,5 +19,27 @@ export default (state, action) => {
             room: '',
             loading: false
         }
+
+        case NOTIFICATION: 
+        return {
+            ...state,
+            notifications: [...state.notifications, payload],
+            loading: false
+        }
+
+        case MESSAGE:
+        return {
+            ...state,
+            messages: [...state.messages, payload],
+            loading: false
+        }
+
+        case ROOM_DATA: 
+        return {
+            ...state,
+            users: [...state.users, payload.usersInRoom]
+        }
+
+        default: return state
     }
 }

@@ -1,6 +1,7 @@
 const express = require('express');
 require('colors');
 const socketio = require('socket.io');
+const { addUser, removeUser, getUser, getUsersInRoom } = require('./controllers/users');
 
 const app = express();
 
@@ -20,15 +21,42 @@ io.on('connect', socket => {
     console.log(`Socket server is up`.blue.bold);
 
     socket.on('join', (data, cb) => {
-        console.log(data)
-        const error = true;
+        const { name, room } = data;
+        const res = addUser({ id: socket.id, name, room });
+
+        const { newUser, error } = res;
+
         if(error){
-            cb({ error: 'ERROR!' });
+            return cb(error);
         }
+
+        socket.emit('notification', { user: 'admin', payload: `Welcome ${newUser.name}. Enjoy spamming ${newUser.room} room` });
+
+        socket.broadcast.to(newUser.room).emit('notification', { user: 'admin', payload: `${newUser.name} has joined.` });
+
+        socket.join(newUser.room);
+
+        const usersInRoom = getUsersInRoom(newUser.room);
+
+        io.to(newUser.room).emit('roomData', { room: newUser.room, usersInRoom })
     })
+
+    socket.on('sendMessage', message => {
+
+        const user = getUser(socket.id);
+        
+        io.to(user.room).emit('message', { user: user.name, payload: message });
+
+    })
+
 })
 
-io.on('disconnect', socket => {
-    console.log(`User has left, socket is disconnected`.red.bold);
+
+
+io.on('disconnect', (socket) => {
+    const user = removeUser(socket.id);
+    if(user){
+        io.to(user.room).emit('notification', { user: 'admin', payload: `${user.name} has left the chat` });
+    }
 })
 

@@ -2,13 +2,17 @@ import React, { useReducer, useEffect, useState } from 'react'
 import roomReducer from './roomReducer'
 import RoomContext from './roomContext'
 import io from 'socket.io-client'
-import { LOGIN } from '../types'
+import { LOGIN, NOTIFICATION, MESSAGE, ROOM_DATA } from '../types'
 
 const RoomState = (props) => {
 
     const initialState = {
         name: '',
         room: '',
+        users: [],
+        notifications: [],
+        messages: [],
+        error: null,
         loading: true
     }
 
@@ -21,14 +25,44 @@ const RoomState = (props) => {
         })
     }
 
+    const newNotification = data => {
+        dispatch({
+            type: NOTIFICATION,
+            payload: data.payload
+        })
+    }
+
+    const newMessage = data => {
+        dispatch({
+            type: MESSAGE,
+            payload: data.payload
+        })
+    }
+
+    const roomData = data => {
+        dispatch({
+            type: ROOM_DATA,
+            payload: data
+        })
+    }
+
     const { name, room } = initialState
 
     return (
         <RoomContext.Provider value={{
             name: state.name,
             room: state.room,
+            messages: state.messages,
+            room: state.room,
+            users: state.users,
+            error: state.error,
+            notifications: state.notifications,
             loading: state.loading,
-            login
+            login,
+            newMessage,
+            newNotification,
+            roomData
+
         }}>
             { props.children }
         </RoomContext.Provider>
