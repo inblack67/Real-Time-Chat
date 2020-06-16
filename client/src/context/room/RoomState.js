@@ -1,7 +1,6 @@
-import React, { useReducer, useEffect, useState } from 'react'
+import React, { useReducer } from 'react'
 import roomReducer from './roomReducer'
 import RoomContext from './roomContext'
-import io from 'socket.io-client'
 import { LOGIN, NOTIFICATION, MESSAGE, ROOM_DATA } from '../types'
 
 const RoomState = (props) => {
@@ -46,14 +45,11 @@ const RoomState = (props) => {
         })
     }
 
-    const { name, room } = initialState
-
     return (
         <RoomContext.Provider value={{
             name: state.name,
             room: state.room,
             messages: state.messages,
-            room: state.room,
             users: state.users,
             error: state.error,
             notifications: state.notifications,

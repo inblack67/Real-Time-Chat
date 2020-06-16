@@ -1,5 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react'
-import PropTypes from 'prop-types'
+import React, { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 import RoomContext from '../../context/room/roomContext'
 import { useContext } from 'react'
@@ -12,7 +11,9 @@ const Room = ({ match }) => {
     const [message, setMessage] = useState('');
 
     useEffect(() => {
-        socket = new io(process.env.REACT_APP_API_END_POINT);
+
+        socket = new io(process.env.REACT_APP_API_END_POINT, {
+            'sync disconnect on unload': true });
         socket.emit('join', { name, room }, (err) => {
             console.log(err.error)
         });
@@ -22,6 +23,7 @@ const Room = ({ match }) => {
             socket.emit('disconnect');
             socket.off();
         }
+        // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
@@ -30,8 +32,7 @@ const Room = ({ match }) => {
         })
 
         socket.on('notification', data => {
-            console.log(data);
-            newNotification(data)
+            newNotification(data);
         })
 
         socket.on('roomData', data => {
@@ -42,14 +43,12 @@ const Room = ({ match }) => {
             socket.emit('disconnect');
             socket.off();
         }
-
+        // eslint-disable-next-line
     },[])
-
-    const roomName = match.params.room;
 
     const roomContext = useContext(RoomContext);
 
-    const { name, room, users, notifications, error, messages, loading, login, newMessage, newNotification, roomData } = roomContext;
+    const { name, room, users, notifications, messages, loading, newMessage, newNotification, roomData, } = roomContext;
 
     const onChange = e => {
         setMessage(e.target.value);
@@ -102,8 +101,5 @@ const Room = ({ match }) => {
     )
 }
 
-Room.propTypes = {
-
-}
 
 export default Room

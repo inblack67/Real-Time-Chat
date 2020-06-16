@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react'
-import PropTypes from 'prop-types'
 import { withRouter } from 'react-router';
 import RoomContext from '../../context/room/roomContext'
 
@@ -46,10 +45,6 @@ const Namespace = ({ history }) => {
             </form>
         </div>
     )
-}
-
-Namespace.propTypes = {
-
 }
 
 export default withRouter(Namespace);

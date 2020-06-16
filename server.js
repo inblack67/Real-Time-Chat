@@ -1,7 +1,7 @@
 const express = require('express');
 require('colors');
 const socketio = require('socket.io');
-const { addUser, removeUser, getUser, getUsersInRoom } = require('./controllers/users');
+const { addUser, removeUser, getUser, getUsersInRoom, remainingUsers } = require('./controllers/users');
 
 const app = express();
 
@@ -18,6 +18,7 @@ const server = app.listen(PORT, () => {
 const io = socketio(server);
 
 io.on('connect', socket => {
+
     console.log(`Socket server is up`.blue.bold);
 
     socket.on('join', (data, cb) => {
@@ -49,15 +50,19 @@ io.on('connect', socket => {
 
     })
 
+    socket.on('disconnect', () => {
+        const user = removeUser(socket.id);
+    
+        if(user) {
+
+          io.to(user.room).emit('notification', { user: 'Admin', payload: `${user.name} has left` });
+
+          const usersInRoom = remainingUsers(user.name) 
+          
+          io.to(user.room).emit('roomData', { room: user.room, usersInRoom });
+        }
+      })
+
 })
 
-
-
-io.on('disconnect', (socket) => {
-    const user = removeUser(socket.id);
-    console.log('server', user);
-    if(user){
-        io.to(user.room).emit('notification', { user: 'admin', payload: `${user.name} has left the chat` });
-    }
-})
 
