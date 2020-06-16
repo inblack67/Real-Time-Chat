@@ -37,7 +37,7 @@ export default (state, action) => {
         case ROOM_DATA: 
         return {
             ...state,
-            users: [...state.users, payload.usersInRoom]
+            users: [...state.users, ...payload.usersInRoom]
         }
 
         default: return state

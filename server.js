@@ -36,7 +36,7 @@ io.on('connect', socket => {
 
         socket.join(newUser.room);
 
-        const usersInRoom = getUsersInRoom(newUser.room);
+        const usersInRoom = getUsersInRoom(newUser.room, socket.id);
 
         io.to(newUser.room).emit('roomData', { room: newUser.room, usersInRoom })
     })
@@ -55,6 +55,7 @@ io.on('connect', socket => {
 
 io.on('disconnect', (socket) => {
     const user = removeUser(socket.id);
+    console.log('server', user);
     if(user){
         io.to(user.room).emit('notification', { user: 'admin', payload: `${user.name} has left the chat` });
     }

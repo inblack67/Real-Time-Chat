@@ -13,7 +13,8 @@ exports.addUser = ({ id, name, room }) => {
 
 exports.removeUser = (id) => {
     const user = users.find(user => user.id === id);
-    users = users.filter(user => user.id === id);
+    users = users.filter(user => user.id !== id);
+    console.log(user);
     return user;
 }
 
@@ -27,7 +28,7 @@ exports.getUser = (id) => {
     }
 }
 
-exports.getUsersInRoom = room => {
-    const usersInRoom = users.filter(user => user.room === room);
+exports.getUsersInRoom = (room, id) => {
+    const usersInRoom = users.filter(user => (user.room === room) && (user.id !== id));
     return usersInRoom;
 }

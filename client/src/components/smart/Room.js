@@ -30,12 +30,18 @@ const Room = ({ match }) => {
         })
 
         socket.on('notification', data => {
+            console.log(data);
             newNotification(data)
         })
 
         socket.on('roomData', data => {
             roomData(data);
         })
+
+        return () => {
+            socket.emit('disconnect');
+            socket.off();
+        }
 
     },[])
 
@@ -52,13 +58,12 @@ const Room = ({ match }) => {
     const onSubmit = e => {
         e.preventDefault();
         socket.emit('sendMessage', message);
+        setMessage('');
     }
 
     if(loading){
         return <Preloader />
     }
-
-    console.log(users);
 
     return (
         <div className="container">
@@ -89,7 +94,6 @@ const Room = ({ match }) => {
                 { users.map(user => 
                      <li className='collection-item' key={Math.random() * 100}>
                         { user.name }
-                        <h3>ok</h3>
                     </li>
                 ) }
                 </ul>
